@@ -1,4 +1,4 @@
-package Pac-Man;
+package PacMan;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,10 +21,11 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         // Load Pac-Man image
         pacmanImage = new ImageIcon(getClass().getResource("/pacman.png")).getImage();
 
-        // Initialize ghost with image path
+        // Initialize ghost
         ghost = new Ghost(200, 200, 5, "/ghost.png");
 
         timer = new Timer(100, this);
+        timer.start(); // Start the timer
     }
 
     public void start() {
