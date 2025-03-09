@@ -17,9 +17,15 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         setBackground(Color.BLACK);
         addKeyListener(this);
         setFocusable(true);
+        requestFocusInWindow(); // Ensure focus for key events
 
-        // Load Pac-Man image
-        pacmanImage = new ImageIcon(getClass().getResource("/pacman.png")).getImage();
+        // Load Pac-Man image safely
+        java.net.URL pacmanURL = getClass().getResource("/pacman.png");
+        if (pacmanURL != null) {
+            pacmanImage = new ImageIcon(pacmanURL).getImage();
+        } else {
+            System.err.println("Error: Pac-Man image not found!");
+        }
 
         // Initialize ghost
         ghost = new Ghost(200, 200, 5, "/ghost.png");
@@ -29,6 +35,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     public void start() {
+        requestFocusInWindow(); // Ensure focus
         timer.start();
     }
 
@@ -36,8 +43,13 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (running) {
-            // Draw Pac-Man
-            g.drawImage(pacmanImage, pacmanX, pacmanY, pacmanSize, pacmanSize, null);
+            // Draw Pac-Man if image is available
+            if (pacmanImage != null) {
+                g.drawImage(pacmanImage, pacmanX, pacmanY, pacmanSize, pacmanSize, null);
+            } else {
+                g.setColor(Color.YELLOW);
+                g.fillOval(pacmanX, pacmanY, pacmanSize, pacmanSize);
+            }
 
             // Draw Ghost
             ghost.draw(g);
@@ -64,7 +76,9 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     private boolean checkCollision() {
-        return (Math.abs(pacmanX - ghost.getX()) < pacmanSize && Math.abs(pacmanY - ghost.getY()) < pacmanSize);
+        Rectangle pacmanBounds = new Rectangle(pacmanX, pacmanY, pacmanSize, pacmanSize);
+        Rectangle ghostBounds = new Rectangle(ghost.getX(), ghost.getY(), 30, 30);
+        return pacmanBounds.intersects(ghostBounds);
     }
 
     @Override
