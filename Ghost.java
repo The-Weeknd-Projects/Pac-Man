@@ -21,6 +21,13 @@ public class Ghost {
          */
     }
 
+    public int getX(){
+        return x;
+    }
+
+    public int getY(){
+        return y;
+    }
     public void draw(Graphics g) { // Graphics provides drawing tools for shapes, images etc
         g.drawImage(ghostImage, x, y, 30, 30, null); // null because we just need static image. We don't need to it to
                                                      // be synchronous
