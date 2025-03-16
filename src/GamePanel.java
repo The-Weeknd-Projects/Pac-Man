@@ -45,36 +45,55 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     @Override
-protected void paintComponent(Graphics g) {
-    // Call the superclass method to ensure proper rendering behavior
-    super.paintComponent(g);
+    protected void paintComponent(Graphics g) {
+        // Call the superclass method to ensure proper rendering behavior
+        super.paintComponent(g);
 
-    // Create a Graphics2D object from the buffered image
-    Graphics2D g2d = buffer.createGraphics();
+        // Create a Graphics2D object from the buffered image
+        Graphics2D g2d = buffer.createGraphics();
 
-    // Set the background color to black and fill the entire panel
-    g2d.setColor(Color.BLACK);
-    g2d.fillRect(0, 0, getWidth(), getHeight());
+        // Set the background color to black and fill the entire panel
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
 
-    if (running) {
-        // Draw Pac-Man at its current position
-        g2d.drawImage(pacmanImage, pacmanX, pacmanY, pacmanSize, pacmanSize, null);
+        if (running) {
+            // Draw Pac-Man at its current position
+            g2d.drawImage(pacmanImage, pacmanX, pacmanY, pacmanSize, pacmanSize, null);
 
-        // Draw the ghost using its draw method
-        ghost.draw(g2d);
-    } else {
-        // Display "Game Over" text in red when the game ends
-        g2d.setColor(Color.RED);
-        g2d.setFont(new Font("Arial", Font.BOLD, 30));
-        g2d.drawString("Game Over", 130, 200);
+            // Draw the ghost using its draw method
+            ghost.draw(g2d);
+        } else {
+            // Display "Game Over" text in red when the game ends
+            g2d.setColor(Color.RED);
+            try {
+                Font gameFont = Font.createFont(Font.TRUETYPE_FONT,
+                        getClass().getResourceAsStream("/resources/PressStart2P-Regular.ttf"));
+                gameFont = gameFont.deriveFont(30f); // Set size
+                g2d.setFont(gameFont);
+            } catch (Exception e) {
+                g2d.setFont(new Font("Arial", Font.BOLD, 30)); // Fallback font
+            }
+
+            // Get the FontMetrics to calculate the text dimensions
+            FontMetrics metrics = g2d.getFontMetrics();
+            String text = "Game Over";
+            int textWidth = metrics.stringWidth(text);
+            int textHeight = metrics.getHeight();
+
+            // Calculate the x and y coordinates to center the text
+            int x = (getWidth() - textWidth) / 2;
+            int y = (getHeight() - textHeight) / 2 + metrics.getAscent();
+
+            // Draw the centered text
+            g2d.drawString(text, x, y);
+        }
+
+        // Dispose of the Graphics2D object to free up resources
+        g2d.dispose();
+
+        // Draw the buffered image onto the screen
+        g.drawImage(buffer, 0, 0, null);
     }
-
-    // Dispose of the Graphics2D object to free up resources
-    g2d.dispose();
-
-    // Draw the buffered image onto the screen
-    g.drawImage(buffer, 0, 0, null);
-}
 
     
     @Override
