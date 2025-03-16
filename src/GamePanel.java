@@ -3,6 +3,7 @@ package src;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 
 class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
@@ -11,6 +12,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Image pacmanImage;
     private Ghost ghost;
     private boolean running = true;
+    private BufferedImage buffer;
 
     public GamePanel() {
         setPreferredSize(new Dimension(400, 400));
@@ -18,6 +20,8 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         addKeyListener(this);
         setFocusable(true);
         requestFocusInWindow(); // Ensure focus for key events
+        buffer = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
+
 
         try {
             // Load Pac-Man image
@@ -41,33 +45,51 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (running) {
-            // Draw Pac-Man
-            g.drawImage(pacmanImage, pacmanX, pacmanY, pacmanSize, pacmanSize, null);
+protected void paintComponent(Graphics g) {
+    // Call the superclass method to ensure proper rendering behavior
+    super.paintComponent(g);
 
-            // Draw Ghost
-            ghost.draw(g);
-        } else {
-            g.setColor(Color.RED);
-            g.setFont(new Font("Arial", Font.BOLD, 30));
-            g.drawString("Game Over", 130, 200);
-        }
+    // Create a Graphics2D object from the buffered image
+    Graphics2D g2d = buffer.createGraphics();
+
+    // Set the background color to black and fill the entire panel
+    g2d.setColor(Color.BLACK);
+    g2d.fillRect(0, 0, getWidth(), getHeight());
+
+    if (running) {
+        // Draw Pac-Man at its current position
+        g2d.drawImage(pacmanImage, pacmanX, pacmanY, pacmanSize, pacmanSize, null);
+
+        // Draw the ghost using its draw method
+        ghost.draw(g2d);
+    } else {
+        // Display "Game Over" text in red when the game ends
+        g2d.setColor(Color.RED);
+        g2d.setFont(new Font("Arial", Font.BOLD, 30));
+        g2d.drawString("Game Over", 130, 200);
     }
 
+    // Dispose of the Graphics2D object to free up resources
+    g2d.dispose();
+
+    // Draw the buffered image onto the screen
+    g.drawImage(buffer, 0, 0, null);
+}
+
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (running) {
-            pacmanX += pacmanDX;
-            pacmanY += pacmanDY;
-            ghost.move();
+        	pacmanX = (pacmanX + pacmanDX + 400) % 400; // Wrap horizontally using the modulous operation for horizontal wrapping around
+        	pacmanY = (pacmanY + pacmanDY + 400) % 400; // Wrap vertically using the modulous operation for vertical wrapping around
 
-            if (checkCollision()) {
-                running = false;
-                timer.stop();
-            }
-            repaint();
+        	ghost.move(); // Move the ghost
+
+        	if (checkCollision()) {
+            		running = false;
+            		timer.stop();
+        	}
+        repaint();
         }
     }
 
