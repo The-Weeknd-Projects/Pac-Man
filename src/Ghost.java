@@ -37,13 +37,13 @@ public class Ghost {
         int dir = (int) (Math.random() * 4);
         switch (dir) {
             case 0:
-                y -= speed;
+                y -= speed;break;
             case 1:
-                y += speed;
+                y += speed;break;
             case 2:
-                x -= speed;
+                x -= speed;break;
             case 3:
-                x += speed;
+                x += speed;break;
         }
         /*
          * 0 -> Up
