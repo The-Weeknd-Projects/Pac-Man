@@ -19,16 +19,17 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
         requestFocusInWindow(); // Ensure focus for key events
 
-        // Load Pac-Man image safely
-        java.net.URL pacmanURL = getClass().getResource("/resources/pacman.png");
-        if (pacmanURL != null) {
-            pacmanImage = new ImageIcon(pacmanURL).getImage();
-        } else {
-            System.err.println("Error: Pac-Man image not found!");
-        }
+        try {
+            // Load Pac-Man image
+            pacmanImage = new ImageIcon(getClass().getResource("/resources/pacman.png")).getImage();
 
-        // Initialize ghost
-        ghost = new Ghost(200, 200, 5, "/resources/ghost.png");
+            // Initialize Ghost
+            ghost = new Ghost(200, 200, 10, "/resources/ghost.png");
+
+        } catch (NullPointerException e) {
+            System.err.println("Error: Required image file is missing!");
+            System.exit(1); // Terminate the program if any image is missing
+        }
 
         timer = new Timer(100, this);
         timer.start(); // Start the timer
@@ -43,13 +44,8 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (running) {
-            // Draw Pac-Man if image is available
-            if (pacmanImage != null) {
-                g.drawImage(pacmanImage, pacmanX, pacmanY, pacmanSize, pacmanSize, null);
-            } else {
-                g.setColor(Color.YELLOW);
-                g.fillOval(pacmanX, pacmanY, pacmanSize, pacmanSize);
-            }
+            // Draw Pac-Man
+            g.drawImage(pacmanImage, pacmanX, pacmanY, pacmanSize, pacmanSize, null);
 
             // Draw Ghost
             ghost.draw(g);
@@ -84,15 +80,29 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        if (key == KeyEvent.VK_LEFT) { pacmanDX = -10; pacmanDY = 0; }
-        if (key == KeyEvent.VK_RIGHT) { pacmanDX = 10; pacmanDY = 0; }
-        if (key == KeyEvent.VK_UP) { pacmanDX = 0; pacmanDY = -10; }
-        if (key == KeyEvent.VK_DOWN) { pacmanDX = 0; pacmanDY = 10; }
+        if (key == KeyEvent.VK_LEFT || key == 'a' || key == 'A') {
+            pacmanDX = -10;
+            pacmanDY = 0;
+        }
+        if (key == KeyEvent.VK_RIGHT || key == 'd' || key == 'D') {
+            pacmanDX = 10;
+            pacmanDY = 0;
+        }
+        if (key == KeyEvent.VK_UP || key == 'w' || key == 'W') {
+            pacmanDX = 0;
+            pacmanDY = -10;
+        }
+        if (key == KeyEvent.VK_DOWN || key == 's' || key == 'S') {
+            pacmanDX = 0;
+            pacmanDY = 10;
+        }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+    }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 }
