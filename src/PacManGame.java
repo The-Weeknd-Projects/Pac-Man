@@ -1,4 +1,4 @@
-package PacMan;
+package src;
 
 import javax.swing.*; //For JFrame, JPanel
 

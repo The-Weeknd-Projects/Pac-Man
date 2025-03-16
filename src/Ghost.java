@@ -1,4 +1,4 @@
-package PacMan;
+package src;
 
 import java.awt.*;
 import javax.swing.ImageIcon;
