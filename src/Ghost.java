@@ -51,5 +51,7 @@ public class Ghost {
          * 2 -> Left
          * 3 -> Right
          */
+        x=(x+400)%400;
+        y=(y+400)%400;
     }
 }
