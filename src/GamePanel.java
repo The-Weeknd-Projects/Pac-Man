@@ -13,6 +13,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Ghost ghost;
     private boolean running = true;
     private BufferedImage buffer;
+    private SoundSystem pacSound, ghostSound;
 
     public GamePanel() {
         setPreferredSize(new Dimension(400, 400));
@@ -21,6 +22,8 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
         requestFocusInWindow(); // Ensure focus for key events
         buffer = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
+        pacSound = new SoundSystem();
+        ghostSound = new SoundSystem();
 
 
         try {
@@ -103,11 +106,18 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         	pacmanY = (pacmanY + pacmanDY + 400) % 400; // Wrap vertically using the modulous operation for vertical wrapping around
 
         	ghost.move(); // Move the ghost
-
+            
         	if (checkCollision()) {
+                    pacSound.stop(); // Stop the chomp sound
+                    ghostSound.stop(); // Stop the ghost sound
+                    pacSound.play("/resources/death.wav",false); // Play the death sound only once
             		running = false;
             		timer.stop();
         	}
+
+            if (!ghostSound.isLooping()) {
+                ghostSound.play("/resources/ghost.wav", true); // Loop sound if loop has not started
+            }
         repaint();
         }
     }
@@ -121,21 +131,31 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
+        boolean changed=false;
+
         if (key == KeyEvent.VK_LEFT || key == 'a' || key == 'A') {
             pacmanDX = -10;
             pacmanDY = 0;
+            changed=true;
         }
         if (key == KeyEvent.VK_RIGHT || key == 'd' || key == 'D') {
             pacmanDX = 10;
             pacmanDY = 0;
+            changed=true;
         }
         if (key == KeyEvent.VK_UP || key == 'w' || key == 'W') {
             pacmanDX = 0;
             pacmanDY = -10;
+            changed=true;
         }
         if (key == KeyEvent.VK_DOWN || key == 's' || key == 'S') {
             pacmanDX = 0;
             pacmanDY = 10;
+            changed=true;
+        }
+
+        if(changed && !pacSound.isLooping()){
+            pacSound.play("/resources/chomp.wav",true);
         }
     }
 
