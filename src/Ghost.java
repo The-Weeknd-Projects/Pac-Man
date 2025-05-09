@@ -21,29 +21,33 @@ public class Ghost {
          */
     }
 
-    public int getX(){
+    public int getX() {
         return x;
     }
 
-    public int getY(){
+    public int getY() {
         return y;
     }
-    public void draw(Graphics g) { // Graphics provides drawing tools for shapes, images etc
-        g.drawImage(ghostImage, x, y, 30, 30, null); // null because we just need static image. We don't need to it to
-                                                     // be synchronous
+
+    public void draw(Graphics2D g2d, int xOffset, int yOffset) {
+        g2d.drawImage(ghostImage, xOffset + x, yOffset + y, 30, 30, null);
     }
 
     public void move() {
         int dir = (int) (Math.random() * 4);
         switch (dir) {
             case 0:
-                y -= speed;break;
+                y -= speed;
+                break;
             case 1:
-                y += speed;break;
+                y += speed;
+                break;
             case 2:
-                x -= speed;break;
+                x -= speed;
+                break;
             case 3:
-                x += speed;break;
+                x += speed;
+                break;
         }
         /*
          * 0 -> Up
@@ -51,7 +55,7 @@ public class Ghost {
          * 2 -> Left
          * 3 -> Right
          */
-        x=(x+600)%600;
-        y=(y+600)%600;
+        x = (x + 600) % 600;
+        y = (y + 600) % 600;
     }
 }

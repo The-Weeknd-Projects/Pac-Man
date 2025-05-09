@@ -8,7 +8,8 @@ import java.io.InputStream;
 
 class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
-    private int dim = 600; // Dimension of the game window
+    private int width = 1920; // Dimension of the game window
+    private int height = 1080; // Dimension of the game window
     private int tileSize = 30; // Size of each square tile in the grid
     private int pacmanX = 30, pacmanY = 30, pacmanSize = 30;
     private int pacmanDX = 15, pacmanDY = 0; // Default movement
@@ -25,12 +26,12 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     private boolean map[][];
 
     public GamePanel() {
-        setPreferredSize(new Dimension(dim, dim));
+        setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
         addKeyListener(this);
         setFocusable(true);
         requestFocusInWindow();
-        buffer = new BufferedImage(dim, dim, BufferedImage.TYPE_INT_ARGB);
+        buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         pacSound = new SoundSystem();
         ghostSound = new SoundSystem();
         map = new boolean[][] {
@@ -121,21 +122,30 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
+        // Calculate offsets to center the grid
+        int gridWidth = map[0].length * tileSize;
+        int gridHeight = map.length * tileSize;
+        int xOffset = (getWidth() - gridWidth) / 2;
+        int yOffset = (getHeight() - gridHeight) / 2;
+
+        // Draw the grid
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (map[i][j]) {
                     g2d.setColor(Color.BLUE);
-                    g2d.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
+                    g2d.drawRect(xOffset + j * tileSize, yOffset + i * tileSize, tileSize, tileSize);
                 }
             }
         }
 
         if (running) {
             if (!trigger)
-                g2d.drawImage(pacmanFrames[0][direction], pacmanX, pacmanY, pacmanSize, pacmanSize, null);
+                g2d.drawImage(pacmanFrames[0][direction], xOffset + pacmanX, yOffset + pacmanY, pacmanSize, pacmanSize,
+                        null);
             else
-                g2d.drawImage(pacmanFrames[mouthState][direction], pacmanX, pacmanY, pacmanSize, pacmanSize, null);
-            ghost.draw(g2d);
+                g2d.drawImage(pacmanFrames[mouthState][direction], xOffset + pacmanX, yOffset + pacmanY, pacmanSize,
+                        pacmanSize, null);
+            ghost.draw(g2d, xOffset, yOffset); // Pass offsets to the ghost's draw method
         } else {
             drawGameOverScreen(g2d);
         }
@@ -196,10 +206,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     public boolean wallCollision(int x, int y) {
         int left = x;
-        int right = x + pacmanSize - 1; //so that it doesn't check pixel with wall (only 0 to 29 pixels)
+        int right = x + pacmanSize - 1; // so that it doesn't check pixel with wall (only 0 to 29 pixels)
         int top = y;
         int bottom = y + pacmanSize - 1;
-        //four edges of pacman
+        // four edges of pacman
         return map[top / tileSize][left / tileSize] ||
                 map[top / tileSize][right / tileSize] ||
                 map[bottom / tileSize][left / tileSize] ||
@@ -251,4 +261,5 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
     }
+
 }
