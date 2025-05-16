@@ -27,6 +27,8 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     private boolean trigger = false;
     private boolean isAlive = true;
     private boolean map[][];
+    private boolean food[][];
+    private Image foodImg;
 
     public GamePanel() {
         setPreferredSize(new Dimension(width, height));
@@ -38,57 +40,43 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         pacSound = new SoundSystem();
         ghostSound = new SoundSystem();
         map = new boolean[][] {
-            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  
+            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true},
+            {true,  false, false, false, false, false, true,  false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, false, false, false, false, false, false, false, false, true},
+            {true,  false, true,  false, true,  false, false, false, true,  false, true,  true,  false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  true,  false, true,  false, false, true,  true,  false, true},
+            {true,  false, false, false, true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  false, false, true,  true,  false, true,  false, false, false, false, true,  false, true,  false, false},
+            {true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  true,  true,  false, true,  false, true,  true,  false, false, true,  true,  true,  false, true,  true,  false, false, false, true},
+            {true,  false, false, false, true,  false, false, false, true,  false, true,  false, true,  false, false, false, false, false, false, true,  true,  false, false, true,  false, false, false, true,  true,  true,  false, true},
+            {true,  false, true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  false, true,  false, false, false, true,  false, true,  false, true},
+            {true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, false, false, false, false, true,  false, true,  false, false, false, false, true,  true,  true,  true,  true,  false, false, false, true},
+            {true,  false, false, false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  false, false, false, true,  false, true,  false, false, false, false, false, false, true,  false, true},
+            {true,  true,  true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  true,  false, true,  true,  false, false, false, true,  true,  true,  false, false, false, false, true},
+            {true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, false, true,  true,  true,  true,  true,  false, true,  true,  true,  true,  true,  true},
+            {true,  false, true,  true,  true,  true,  false, true,  false, true,  true,  false, true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, true,  false, false, false, false, true},
+            {false, false, false, false, false, true,  false, true,  false, true,  true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  false, true,  false, true,  true,  false, true,  true,  false, true},
+            {true,  false, true,  true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, false, true,  false, true,  true,  false, false, false, false, false, false, false, true,  false, true},
+            {true,  false, true,  false, false, false, true,  true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  true,  false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  false, true},
+            {true,  false, false, false, true,  false, false, false, false, false, false, true,  true,  true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, false, true},
+            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true}
+        }; // 20x20 grid
 
-true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true},
-            {true,  false, false, false, false, false, true,  false, true,  false, false, false, false, false, false, false, false, false, false, 
-
-false, true,  false, false, false, false, false, false, false, false, false, false, true},
-            {true,  false, true,  false, true,  false, false, false, true,  false, true,  true,  false, true,  true,  true,  true,  true,  false, 
-
-true,  true,  false, true,  true,  false, true,  false, false, true,  true,  false, true},
-            {true,  false, false, false, true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  false, false, 
-
-true,  true,  false, true,  false, false, false, false, true,  false, true,  false, false},
-            {true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  true,  true,  false, true,  false, true,  
-
-true,  false, false, true,  true,  true,  false, true,  true,  false, false, false, true},
-            {true,  false, false, false, true,  false, false, false, true,  false, true,  false, true,  false, false, false, false, false, false, 
-
-true,  true,  false, false, true,  false, false, false, true,  true,  true,  false, true},
-            {true,  false, true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  false, true,  
-
-false, true,  true,  false, true,  false, false, false, true,  false, true,  false, true},
-            {true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, false, false, false, false, true,  false, true,  
-
-false, false, false, false, true,  true,  true,  true,  true,  false, false, false, true},
-            {true,  false, false, false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  false, false, 
-
-false, true,  false, true,  false, false, false, false, false, false, true,  false, true},
-            {true,  true,  true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  true,  false, 
-
-true,  true,  false, false, false, true,  true,  true,  false, false, false, false, true},
-            {true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, 
-
-false, true,  true,  true,  true,  true,  false, true,  true,  true,  true,  true,  true},
-            {true,  false, true,  true,  true,  true,  false, true,  false, true,  true,  false, true,  false, true,  false, false, false, true,  
-
-false, false, false, false, false, false, false, true,  false, false, false, false, true},
-            {false, false, false, false, false, true,  false, true,  false, true,  true,  false, true,  true,  true,  false, true,  false, true,  
-
-false, true,  true,  false, true,  false, true,  true,  false, true,  true,  false, true},
-            {true,  false, true,  true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, false, true,  
-
-false, true,  true,  false, false, false, false, false, false, false, true,  false, true},
-            {true,  false, true,  false, false, false, true,  true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  true,  
-
-false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  false, true},
-            {true,  false, false, false, true,  false, false, false, false, false, false, true,  true,  true,  false, false, false, true,  false, 
-
-false, false, false, false, false, false, false, false, false, false, false, false, true},
-            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  
-
-true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true}
+        food = new boolean[][] {
+            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true},
+            {true,  false, false, false, false, false, true,  false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, false, false, false, false, false, false, false, false, true},
+            {true,  false, true,  false, true,  false, false, false, true,  false, true,  true,  false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  true,  false, true,  false, false, true,  true,  false, true},
+            {true,  false, false, false, true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  false, false, true,  true,  false, true,  false, false, false, false, true,  false, true,  false, false},
+            {true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  true,  true,  false, true,  false, true,  true,  false, false, true,  true,  true,  false, true,  true,  false, false, false, true},
+            {true,  false, false, false, true,  false, false, false, true,  false, true,  false, true,  false, false, false, false, false, false, true,  true,  false, false, true,  false, false, false, true,  true,  true,  false, true},
+            {true,  false, true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  false, true,  false, false, false, true,  false, true,  false, true},
+            {true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, false, false, false, false, true,  false, true,  false, false, false, false, true,  true,  true,  true,  true,  false, false, false, true},
+            {true,  false, false, false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  false, false, false, true,  false, true,  false, false, false, false, false, false, true,  false, true},
+            {true,  true,  true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  true,  false, true,  true,  false, false, false, true,  true,  true,  false, false, false, false, true},
+            {true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, false, true,  true,  true,  true,  true,  false, true,  true,  true,  true,  true,  true},
+            {true,  false, true,  true,  true,  true,  false, true,  false, true,  true,  false, true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, true,  false, false, false, false, true},
+            {false, false, false, false, false, true,  false, true,  false, true,  true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  false, true,  false, true,  true,  false, true,  true,  false, true},
+            {true,  false, true,  true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, false, true,  false, true,  true,  false, false, false, false, false, false, false, true,  false, true},
+            {true,  false, true,  false, false, false, true,  true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  true,  false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  false, true},
+            {true,  false, false, false, true,  false, false, false, false, false, false, true,  true,  true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, false, true},
+            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true}
         }; // 20x20 grid
 
         // Load Pac-Man images
@@ -100,6 +88,7 @@ true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  tru
                     pacmanFrames[row][col] = new ImageIcon(getClass().getResource(path)).getImage();
                 }
             }
+            foodImg = new ImageIcon(getClass().getResource("/resources/food.png")).getImage();
         } catch (NullPointerException e) {
             System.err.println("Error: Required Pac-Man images are missing!");
             System.exit(1);
@@ -109,7 +98,7 @@ true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  tru
         orange = new Gian(720, 180, "/resources/gian.png");
         green = new Gamora(780, 180,"/resources/gamora.png");
         nigger = new AlienX(750, 180, "/resources/alienX.png");
-	red = new DeadPool(750, 150,"/resources/deadPool.png");
+        red = new DeadPool(750, 150,"/resources/deadPool.png");
         // Load custom font
         loadGameFont();
 
@@ -144,27 +133,37 @@ true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  tru
         int xOffset = (getWidth() - gridWidth) / 2;
         int yOffset = (getHeight() - gridHeight) / 2;
 
-        // Draw the grid
+        // Draw the grid and food
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (map[i][j]) {
                     g2d.setColor(Color.BLUE);
                     g2d.drawRect(xOffset + j * tileSize, yOffset + i * tileSize, tileSize, tileSize);
                 }
+                else if (!food[i][j]) {
+                    g2d.drawImage(foodImg, xOffset + j * tileSize + 10, yOffset + i * tileSize + 10, 10, 10, null);
+                }
+            }
+        }
+
+        // Pac-Man eats food
+        int pacGridX = (pacmanX) / tileSize;
+        int pacGridY = (pacmanY) / tileSize;
+        if (pacGridY >= 0 && pacGridY < food.length && pacGridX >= 0 && pacGridX < food[0].length) {
+            if (!food[pacGridY][pacGridX]) {
+                food[pacGridY][pacGridX] = true; // Remove food when Pac-Man touches it
             }
         }
 
         if (running) {
             if (!trigger)
-                g2d.drawImage(pacmanFrames[0][direction], xOffset + pacmanX, yOffset + pacmanY, pacmanSize, pacmanSize,
-                        null);
+                g2d.drawImage(pacmanFrames[0][direction], xOffset + pacmanX, yOffset + pacmanY, pacmanSize, pacmanSize, null);
             else
-                g2d.drawImage(pacmanFrames[mouthState][direction], xOffset + pacmanX, yOffset + pacmanY, pacmanSize,
-                        pacmanSize, null);
-            red.draw(g2d, xOffset, yOffset); // Pass offsets to the ghost's draw method
-	    green.draw(g2d, xOffset, yOffset);
-	    nigger.draw(g2d, xOffset, yOffset);
-	    orange.draw(g2d, xOffset, yOffset);
+                g2d.drawImage(pacmanFrames[mouthState][direction], xOffset + pacmanX, yOffset + pacmanY, pacmanSize, pacmanSize, null);
+            red.draw(g2d, xOffset, yOffset);
+            green.draw(g2d, xOffset, yOffset);
+            nigger.draw(g2d, xOffset, yOffset);
+            orange.draw(g2d, xOffset, yOffset);
         } else {
             drawGameOverScreen(g2d);
         }
@@ -210,10 +209,10 @@ true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  tru
                     }
                 }
                 finally{
-			red.move();
-			green.move();
-			orange.move();
-			nigger.move();
+                    red.move();
+                    green.move();
+                    orange.move();
+                    nigger.move();
                 }
             }
             mouthState = (mouthState + 1) % 3;
@@ -237,15 +236,15 @@ true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  tru
     private boolean checkCollision() {
         Rectangle pacmanBounds = new Rectangle(pacmanX, pacmanY, pacmanSize, pacmanSize);
         Rectangle[] ghostBounds = {
-    	new Rectangle(red.getX(), red.getY(), 30, 30),
-    	new Rectangle(green.getX(), green.getY(), 30, 30),
-    	new Rectangle(orange.getX(), orange.getY(), 30, 30),
-    	new Rectangle(nigger.getX(), nigger.getY(), 30, 30)
-	};
-	for (Rectangle bounds : ghostBounds) {
-    		if (pacmanBounds.intersects(bounds)) return true;
-	}
-	return false;
+            new Rectangle(red.getX(), red.getY(), 30, 30),
+            new Rectangle(green.getX(), green.getY(), 30, 30),
+            new Rectangle(orange.getX(), orange.getY(), 30, 30),
+            new Rectangle(nigger.getX(), nigger.getY(), 30, 30)
+        };
+        for (Rectangle bounds : ghostBounds) {
+            if (pacmanBounds.intersects(bounds)) return true;
+        }
+        return false;
     }
 
     public boolean wallCollision(int x, int y) {
