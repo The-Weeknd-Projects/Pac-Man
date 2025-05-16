@@ -35,46 +35,23 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         pacSound = new SoundSystem();
         ghostSound = new SoundSystem();
         map = new boolean[][] {
-                { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-                        true, true, true },
-                { true, false, false, false, true, false, false, false, false, true, false, false, false, false, false,
-                        true, false, false, false, true },
-                { true, false, true, false, true, false, true, true, false, true, false, true, true, true, false, true,
-                        false, true, false, true },
-                { true, false, true, false, false, false, false, true, false, false, false, true, false, true, false,
-                        false, false, true, false, true },
-                { true, true, true, true, true, true, false, true, true, true, true, true, false, true, true, true,
-                        true, true, false, true },
-                { true, false, false, false, true, false, false, false, false, true, false, false, false, false, false,
-                        true, false, false, false, true },
-                { true, false, true, false, true, false, true, true, false, true, false, true, true, true, false, true,
-                        false, true, false, true },
-                { true, false, true, false, false, false, false, true, false, false, false, true, false, true, false,
-                        false, false, true, false, true },
-                { true, true, true, true, true, true, false, true, true, true, true, true, false, true, true, true,
-                        true, true, false, true },
-                { true, false, false, false, true, false, false, false, false, true, false, false, false, false, false,
-                        true, false, false, false, true },
-                { true, false, true, false, true, false, true, true, false, true, false, true, true, true, false, true,
-                        false, true, false, true },
-                { true, false, true, false, false, false, false, true, false, false, false, true, false, true, false,
-                        false, false, true, false, true },
-                { true, true, true, true, true, true, false, true, true, true, true, true, false, true, true, true,
-                        true, true, false, true },
-                { true, false, false, false, true, false, false, false, false, true, false, false, false, false, false,
-                        true, false, false, false, true },
-                { true, false, true, false, true, false, true, true, false, true, false, true, true, true, false, true,
-                        false, true, false, true },
-                { true, false, true, false, false, false, false, true, false, false, false, true, false, true, false,
-                        false, false, true, false, true },
-                { true, true, true, false, true, true, false, true, true, true, true, true, false, true, true, true,
-                        true, true, false, true },
-                { true, false, false, false, true, false, false, false, false, true, false, false, false, false, false,
-                        true, false, false, false, true },
-                { true, false, true, false, true, false, true, true, false, true, false, true, true, true, false, true,
-                        false, true, false, true },
-                { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-                        true, true, true }
+            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true},
+            {true,  false, false, false, false, false, true,  false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, false, false, false, false, false, false, false, false, true},
+            {true,  false, true,  false, true,  false, false, false, true,  false, true,  true,  false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  true,  false, true,  false, false, true,  true,  false, true},
+            {true,  false, false, false, true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  false, false, true,  true,  false, true,  false, false, false, false, true,  false, true,  false, false},
+            {true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  true,  true,  false, true,  false, true,  true,  false, false, true,  true,  true,  false, true,  true,  false, false, false, true},
+            {true,  false, false, false, true,  false, false, false, true,  false, true,  false, true,  false, false, false, false, false, false, true,  true,  false, false, true,  false, false, false, true,  true,  true,  false, true},
+            {true,  false, true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  false, true,  false, false, false, true,  false, true,  false, true},
+            {true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, false, false, false, false, true,  false, true,  false, false, false, false, true,  true,  true,  true,  true,  false, false, false, true},
+            {true,  false, false, false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  false, false, false, true,  false, true,  false, false, false, false, false, false, true,  false, true},
+            {true,  true,  true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  true,  false, true,  true,  false, false, false, true,  true,  true,  false, false, false, false, true},
+            {true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, false, true,  true,  true,  true,  true,  false, true,  true,  true,  true,  true,  true},
+            {true,  false, true,  true,  true,  true,  false, true,  false, true,  true,  false, true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, true,  false, false, false, false, true},
+            {false, false, false, false, false, true,  false, true,  false, true,  true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  false, true,  false, true,  true,  false, true,  true,  false, true},
+            {true,  false, true,  true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, false, true,  false, true,  true,  false, false, false, false, false, false, false, true,  false, true},
+            {true,  false, true,  false, false, false, true,  true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  true,  false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  false, true},
+            {true,  false, false, false, true,  false, false, false, false, false, false, true,  true,  true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, false, false, true},
+            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true}
         }; // 20x20 grid
 
         // Load Pac-Man images
@@ -172,13 +149,27 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         if (running) {
             if (trigger) {
-                int tempX = pacmanX + pacmanDX;
-                int tempY = pacmanY + pacmanDY;
-                if (!wallCollision(tempX, tempY)) {
-                    pacmanX = tempX;
-                    pacmanY = tempY;
+                try{
+                    int tempX = pacmanX + pacmanDX;
+                    int tempY = pacmanY + pacmanDY;
+                    if (!wallCollision(tempX, tempY)) {
+                        pacmanX = tempX;
+                        pacmanY = tempY;
+                    }
                 }
-                ghost.move();
+                catch(ArrayIndexOutOfBoundsException ex){
+                    if(pacmanX < 0){
+                        pacmanX = 930;
+                        pacmanY = 90;
+                    }
+                    else{
+                        pacmanX = 0;
+                        pacmanY = 360;
+                    }
+                }
+                finally{
+                    ghost.move();
+                }
             }
             mouthState = (mouthState + 1) % 3;
             if (checkCollision()) {
@@ -220,37 +211,47 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         boolean changed = false;
+        int newDX = pacmanDX, newDY = pacmanDY, newDirection = direction;
+
         if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
-            pacmanDX = -15;
-            pacmanDY = 0;
-            direction = 1;
+            newDX = -15;
+            newDY = 0;
+            newDirection = 1;
             changed = true;
-            trigger = true;
         }
         if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
-            pacmanDX = 15;
-            pacmanDY = 0;
-            direction = 0;
+            newDX = 15;
+            newDY = 0;
+            newDirection = 0;
             changed = true;
-            trigger = true;
         }
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
-            pacmanDX = 0;
-            pacmanDY = -15;
-            direction = 2;
+            newDX = 0;
+            newDY = -15;
+            newDirection = 2;
             changed = true;
-            trigger = true;
         }
         if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
-            pacmanDX = 0;
-            pacmanDY = 15;
-            direction = 3;
+            newDX = 0;
+            newDY = 15;
+            newDirection = 3;
             changed = true;
-            trigger = true;
         }
 
-        if (isAlive && changed && !pacSound.isLooping()) {
-            pacSound.play("/resources/chomp.wav", true);
+        if (changed) {
+            // Check if the next tile in the intended direction is open
+            int tempX = pacmanX + newDX;
+            int tempY = pacmanY + newDY;
+            if (!wallCollision(tempX, tempY)) {
+                pacmanDX = newDX;
+                pacmanDY = newDY;
+                direction = newDirection;
+                trigger = true;
+                if (isAlive && !pacSound.isLooping()) {
+                    pacSound.play("/resources/chomp.wav", true);
+                }
+            }
+            // else: do nothing, keep moving in current direction
         }
     }
 
