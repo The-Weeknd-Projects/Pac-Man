@@ -16,7 +16,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Image[][] pacmanFrames = new Image[3][4]; // 3 mouth states, 4 directions
     private int mouthState = 0; // 0 = closed, 1 = half-open, 2 = full-open
     private int direction = 0; // 0 = Right, 1 = Left, 2 = Up, 3 = Down
-    private Ghost ghost;
+    private DeadPool red;
+    private Gamora green;
+    private Gian orange;
+    private AlienX nigger;
     private boolean running = true;
     private BufferedImage buffer;
     private SoundSystem pacSound, ghostSound;
@@ -35,23 +38,57 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         pacSound = new SoundSystem();
         ghostSound = new SoundSystem();
         map = new boolean[][] {
-            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true},
-            {true,  false, false, false, false, false, true,  false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, false, false, false, false, false, false, false, false, true},
-            {true,  false, true,  false, true,  false, false, false, true,  false, true,  true,  false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  true,  false, true,  false, false, true,  true,  false, true},
-            {true,  false, false, false, true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  false, false, true,  true,  false, true,  false, false, false, false, true,  false, true,  false, false},
-            {true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  true,  true,  false, true,  false, true,  true,  false, false, true,  true,  true,  false, true,  true,  false, false, false, true},
-            {true,  false, false, false, true,  false, false, false, true,  false, true,  false, true,  false, false, false, false, false, false, true,  true,  false, false, true,  false, false, false, true,  true,  true,  false, true},
-            {true,  false, true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  false, true,  false, false, false, true,  false, true,  false, true},
-            {true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, false, false, false, false, true,  false, true,  false, false, false, false, true,  true,  true,  true,  true,  false, false, false, true},
-            {true,  false, false, false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  false, false, false, true,  false, true,  false, false, false, false, false, false, true,  false, true},
-            {true,  true,  true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  true,  false, true,  true,  false, false, false, true,  true,  true,  false, false, false, false, true},
-            {true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, false, true,  true,  true,  true,  true,  false, true,  true,  true,  true,  true,  true},
-            {true,  false, true,  true,  true,  true,  false, true,  false, true,  true,  false, true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, true,  false, false, false, false, true},
-            {false, false, false, false, false, true,  false, true,  false, true,  true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  false, true,  false, true,  true,  false, true,  true,  false, true},
-            {true,  false, true,  true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, false, true,  false, true,  true,  false, false, false, false, false, false, false, true,  false, true},
-            {true,  false, true,  false, false, false, true,  true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  true,  false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  false, true},
-            {true,  false, false, false, true,  false, false, false, false, false, false, true,  true,  true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, false, false, true},
-            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true}
+            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  
+
+true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true},
+            {true,  false, false, false, false, false, true,  false, true,  false, false, false, false, false, false, false, false, false, false, 
+
+false, true,  false, false, false, false, false, false, false, false, false, false, true},
+            {true,  false, true,  false, true,  false, false, false, true,  false, true,  true,  false, true,  true,  true,  true,  true,  false, 
+
+true,  true,  false, true,  true,  false, true,  false, false, true,  true,  false, true},
+            {true,  false, false, false, true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  false, false, 
+
+true,  true,  false, true,  false, false, false, false, true,  false, true,  false, false},
+            {true,  true,  true,  false, true,  false, true,  false, false, false, false, false, true,  true,  true,  false, true,  false, true,  
+
+true,  false, false, true,  true,  true,  false, true,  true,  false, false, false, true},
+            {true,  false, false, false, true,  false, false, false, true,  false, true,  false, true,  false, false, false, false, false, false, 
+
+true,  true,  false, false, true,  false, false, false, true,  true,  true,  false, true},
+            {true,  false, true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  false, true,  
+
+false, true,  true,  false, true,  false, false, false, true,  false, true,  false, true},
+            {true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, false, false, false, false, true,  false, true,  
+
+false, false, false, false, true,  true,  true,  true,  true,  false, false, false, true},
+            {true,  false, false, false, true,  false, true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  false, false, 
+
+false, true,  false, true,  false, false, false, false, false, false, true,  false, true},
+            {true,  true,  true,  false, false, false, true,  false, true,  false, true,  false, true,  true,  true,  false, true,  true,  false, 
+
+true,  true,  false, false, false, true,  true,  true,  false, false, false, false, true},
+            {true,  false, false, false, true,  false, false, false, false, false, false, false, false, false, false, false, true,  false, false, 
+
+false, true,  true,  true,  true,  true,  false, true,  true,  true,  true,  true,  true},
+            {true,  false, true,  true,  true,  true,  false, true,  false, true,  true,  false, true,  false, true,  false, false, false, true,  
+
+false, false, false, false, false, false, false, true,  false, false, false, false, true},
+            {false, false, false, false, false, true,  false, true,  false, true,  true,  false, true,  true,  true,  false, true,  false, true,  
+
+false, true,  true,  false, true,  false, true,  true,  false, true,  true,  false, true},
+            {true,  false, true,  true,  false, true,  false, false, false, true,  false, false, false, false, false, false, false, false, true,  
+
+false, true,  true,  false, false, false, false, false, false, false, true,  false, true},
+            {true,  false, true,  false, false, false, true,  true,  true,  true,  false, true,  false, true,  false, true,  true,  true,  true,  
+
+false, true,  true,  true,  true,  true,  false, true,  true,  false, true,  false, true},
+            {true,  false, false, false, true,  false, false, false, false, false, false, true,  true,  true,  false, false, false, true,  false, 
+
+false, false, false, false, false, false, false, false, false, false, false, false, true},
+            {true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  
+
+true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true}
         }; // 20x20 grid
 
         // Load Pac-Man images
@@ -69,8 +106,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
 
         // Initialize Ghost
-        ghost = new Ghost(270, 330, 10, "/resources/ghost.png");
-
+        orange = new Gian(720, 180, "/resources/gian.png");
+        green = new Gamora(780, 180,"/resources/gamora.png");
+        nigger = new AlienX(750, 180, "/resources/alienX.png");
+	red = new DeadPool(750, 150,"/resources/deadPool.png");
         // Load custom font
         loadGameFont();
 
@@ -122,7 +161,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
             else
                 g2d.drawImage(pacmanFrames[mouthState][direction], xOffset + pacmanX, yOffset + pacmanY, pacmanSize,
                         pacmanSize, null);
-            ghost.draw(g2d, xOffset, yOffset); // Pass offsets to the ghost's draw method
+            red.draw(g2d, xOffset, yOffset); // Pass offsets to the ghost's draw method
+	    green.draw(g2d, xOffset, yOffset);
+	    nigger.draw(g2d, xOffset, yOffset);
+	    orange.draw(g2d, xOffset, yOffset);
         } else {
             drawGameOverScreen(g2d);
         }
@@ -168,7 +210,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
                     }
                 }
                 finally{
-                    ghost.move();
+			red.move();
+			green.move();
+			orange.move();
+			nigger.move();
                 }
             }
             mouthState = (mouthState + 1) % 3;
@@ -191,8 +236,16 @@ class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     private boolean checkCollision() {
         Rectangle pacmanBounds = new Rectangle(pacmanX, pacmanY, pacmanSize, pacmanSize);
-        Rectangle ghostBounds = new Rectangle(ghost.getX(), ghost.getY(), 30, 30);
-        return pacmanBounds.intersects(ghostBounds);
+        Rectangle[] ghostBounds = {
+    	new Rectangle(red.getX(), red.getY(), 30, 30),
+    	new Rectangle(green.getX(), green.getY(), 30, 30),
+    	new Rectangle(orange.getX(), orange.getY(), 30, 30),
+    	new Rectangle(nigger.getX(), nigger.getY(), 30, 30)
+	};
+	for (Rectangle bounds : ghostBounds) {
+    		if (pacmanBounds.intersects(bounds)) return true;
+	}
+	return false;
     }
 
     public boolean wallCollision(int x, int y) {
